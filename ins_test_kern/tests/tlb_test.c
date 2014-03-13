@@ -7,7 +7,6 @@ void writeEntryHi(int vpn2, int asid)
     asm("mtc0 %0, $10"
         : 
         : "r" (entryHiVal)
-        : 
     );
     return;
 }
@@ -21,7 +20,6 @@ void writeEntryLo(int type, int pfn, int c, int d, int g, int v)
         asm("mtc0 %0, $2"
             :
             : "r" (entryLoVal)
-            :
            );
     }
     else if(type == 1)
@@ -29,7 +27,6 @@ void writeEntryLo(int type, int pfn, int c, int d, int g, int v)
         asm("mtc0 %0, $3"
             :
             : "r" (entryLoVal)
-            :
            );
     } 
     else
@@ -44,7 +41,6 @@ void writeTLBIndex(int index)
     asm("mtc0 %0, $0"
         :
         : "r" (index)
-        :
         );
     return;
 }
@@ -52,9 +48,6 @@ void writeTLBIndex(int index)
 void writeTLBWithIndex()
 {
    asm("tlbwi"
-       :
-       : 
-       :
        );
 }
 

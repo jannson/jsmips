@@ -25,8 +25,6 @@ os.chdir(curDir)
 
    
 for target in targets:
-    try:
-        buildFile(target)
-        print("target built: %s"%target)
-    except:
-        print("target failed: %s"%target)
+    buildFile(target)
+    print("target built: %s"%target)
+    #print("target failed: %s"%target)

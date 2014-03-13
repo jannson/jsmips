@@ -25,7 +25,6 @@ void LWL_LWR() {
             "lwl %0, 0(%1)\n" 
                : "=r" (v) 
                : "r" (p) , "m" (*p) 
-               : 
         );
         print("val after lwl: 0x");
         print(itoa(v,16)); 
@@ -34,7 +33,6 @@ void LWL_LWR() {
             "lwr %0, 3(%1)\n" 
                : "=r" (v)
                : "r" (p) , "m" (*p) 
-               : 
         ); 
         print("val after lwr: 0x");
         print(itoa(v,16)); 

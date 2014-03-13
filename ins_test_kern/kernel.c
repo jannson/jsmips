@@ -49,12 +49,12 @@ void exit(int val){
 
 void kmain(void)
 {
-
     if( main() != 0 ){
         fail();
     }
-    
-    pass();
+    else {
+        pass();
+    }
 }
 
 

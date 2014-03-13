@@ -1,0 +1,7 @@
+*.o
+*.pyc
+*.srec
+*.elf
+*.map
+doOp.autogen
+
