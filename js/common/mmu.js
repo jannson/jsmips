@@ -274,8 +274,10 @@ function Mmu(size) {
         this.physicalMemory.putUInt16BE(this.addressTranslation(address,1), val);
     }	
 
-    this.readByte = function(address)
+    this.readByte = function(address_in)
     {
+		address = this.addressTranslation(address_in, 0);
+
         //if(address >= 0xbfd00000)
         //{
         //    INFO("IO Reg readByte: " + address.toString(16));
@@ -287,12 +289,14 @@ function Mmu(size) {
         }
         else
         {
-            return this.physicalMemory.getByte(this.addressTranslation(address,0));
+            return this.physicalMemory.getByte(address);
         }
     }
 
-    this.writeByte = function(address, val)
+    this.writeByte = function(address_in, val)
     {
+		address = this.addressTranslation(address_in,1);
+
         //if(address >= 0xbfd00000)
         //{
         //    INFO("IO Reg writeByte: " + address.toString(16) + ", val: " + val.toString(16));
@@ -304,7 +308,7 @@ function Mmu(size) {
         }
         else
         {
-            this.physicalMemory.putByte(this.addressTranslation(address,1), val);
+            this.physicalMemory.putByte(address, val);
         }
     }
 	
@@ -315,13 +319,14 @@ function Mmu(size) {
         //    INFO("IO Reg readWord: " + address.toString(16));
         //    return 0;
         //}
-        if((address >= this.uart.baseAddr) && (address <= this.uart.endAddr))
+        var addr = this.addressTranslation(address,0);
+
+        if((addr >= this.uart.baseAddr) && (addr <= this.uart.endAddr))
         {
-            return this.uart.readWord(address);
+            return this.uart.readWord(addr);
         }
 
 
-        var addr = this.addressTranslation(address,0);
 		if(this.cpu.getEndianness() == 0)
 		{
 			return this.physicalMemory.getUInt32LE(addr);
@@ -340,13 +345,14 @@ function Mmu(size) {
         //    return;
         //}
         //console.log("VA: " + address.toString(16));
-        if((address >= this.uart.baseAddr) && (address <= this.uart.endAddr))
+        var addr = this.addressTranslation(address,1);
+
+        if((addr >= this.uart.baseAddr) && (addr <= this.uart.endAddr))
         {
-            this.uart.writeWord(address,val);
+            this.uart.writeWord(addr,val);
             return;
         } 
         
-        var addr = this.addressTranslation(address,1);
         //console.log("PA: " + addr.toString(16));
 		if(this.cpu.getEndianness() == 0)
 		{
@@ -355,7 +361,7 @@ function Mmu(size) {
 		else
 		{
 			return this.physicalMemory.putUInt32BE(addr, value >>> 0);
-		}	
+		}
 	}
 
     this.loadSREC = function(srecString, setEntry)

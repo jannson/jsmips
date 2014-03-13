@@ -9599,181 +9599,187 @@ function Mmu(size) { // ./common/mmu.js:12
         this.physicalMemory.putUInt16BE(this.addressTranslation(address,1), val); // ./common/mmu.js:273
     } // ./common/mmu.js:274
  // ./common/mmu.js:275
-    this.readByte = function(address) // ./common/mmu.js:276
+    this.readByte = function(address_in) // ./common/mmu.js:276
     { // ./common/mmu.js:277
-        //if(address >= 0xbfd00000) // ./common/mmu.js:278
-        //{ // ./common/mmu.js:279
-        //    INFO("IO Reg readByte: " + address.toString(16)); // ./common/mmu.js:280
-        //    return 0; // ./common/mmu.js:281
-        //} // ./common/mmu.js:282
-        if((address >= this.uart.baseAddr) && (address <= this.uart.endAddr)) // ./common/mmu.js:283
-        { // ./common/mmu.js:284
-            return this.uart.readByte(address); // ./common/mmu.js:285
-        } // ./common/mmu.js:286
-        else // ./common/mmu.js:287
-        { // ./common/mmu.js:288
-            return this.physicalMemory.getByte(this.addressTranslation(address,0)); // ./common/mmu.js:289
-        } // ./common/mmu.js:290
-    } // ./common/mmu.js:291
- // ./common/mmu.js:292
-    this.writeByte = function(address, val) // ./common/mmu.js:293
-    { // ./common/mmu.js:294
-        //if(address >= 0xbfd00000) // ./common/mmu.js:295
-        //{ // ./common/mmu.js:296
-        //    INFO("IO Reg writeByte: " + address.toString(16) + ", val: " + val.toString(16)); // ./common/mmu.js:297
-        //    return; // ./common/mmu.js:298
-        //} // ./common/mmu.js:299
-        if((address >= this.uart.baseAddr) && (address <= this.uart.endAddr)) // ./common/mmu.js:300
-        { // ./common/mmu.js:301
-            this.uart.writeByte(address,val); // ./common/mmu.js:302
-        } // ./common/mmu.js:303
-        else // ./common/mmu.js:304
+		address = this.addressTranslation(address_in, 0); // ./common/mmu.js:278
+ // ./common/mmu.js:279
+        //if(address >= 0xbfd00000) // ./common/mmu.js:280
+        //{ // ./common/mmu.js:281
+        //    INFO("IO Reg readByte: " + address.toString(16)); // ./common/mmu.js:282
+        //    return 0; // ./common/mmu.js:283
+        //} // ./common/mmu.js:284
+        if((address >= this.uart.baseAddr) && (address <= this.uart.endAddr)) // ./common/mmu.js:285
+        { // ./common/mmu.js:286
+            return this.uart.readByte(address); // ./common/mmu.js:287
+        } // ./common/mmu.js:288
+        else // ./common/mmu.js:289
+        { // ./common/mmu.js:290
+            return this.physicalMemory.getByte(address); // ./common/mmu.js:291
+        } // ./common/mmu.js:292
+    } // ./common/mmu.js:293
+ // ./common/mmu.js:294
+    this.writeByte = function(address_in, val) // ./common/mmu.js:295
+    { // ./common/mmu.js:296
+		address = this.addressTranslation(address_in,1); // ./common/mmu.js:297
+ // ./common/mmu.js:298
+        //if(address >= 0xbfd00000) // ./common/mmu.js:299
+        //{ // ./common/mmu.js:300
+        //    INFO("IO Reg writeByte: " + address.toString(16) + ", val: " + val.toString(16)); // ./common/mmu.js:301
+        //    return; // ./common/mmu.js:302
+        //} // ./common/mmu.js:303
+        if((address >= this.uart.baseAddr) && (address <= this.uart.endAddr)) // ./common/mmu.js:304
         { // ./common/mmu.js:305
-            this.physicalMemory.putByte(this.addressTranslation(address,1), val); // ./common/mmu.js:306
+            this.uart.writeByte(address,val); // ./common/mmu.js:306
         } // ./common/mmu.js:307
-    } // ./common/mmu.js:308
- // ./common/mmu.js:309
-	this.readWord = function(address) // ./common/mmu.js:310
-	{ // ./common/mmu.js:311
-        //if(address >= 0xbfd00000) // ./common/mmu.js:312
-        //{ // ./common/mmu.js:313
-        //    INFO("IO Reg readWord: " + address.toString(16)); // ./common/mmu.js:314
-        //    return 0; // ./common/mmu.js:315
-        //} // ./common/mmu.js:316
-        if((address >= this.uart.baseAddr) && (address <= this.uart.endAddr)) // ./common/mmu.js:317
-        { // ./common/mmu.js:318
-            return this.uart.readWord(address); // ./common/mmu.js:319
-        } // ./common/mmu.js:320
- // ./common/mmu.js:321
+        else // ./common/mmu.js:308
+        { // ./common/mmu.js:309
+            this.physicalMemory.putByte(address, val); // ./common/mmu.js:310
+        } // ./common/mmu.js:311
+    } // ./common/mmu.js:312
+ // ./common/mmu.js:313
+	this.readWord = function(address) // ./common/mmu.js:314
+	{ // ./common/mmu.js:315
+        //if(address >= 0xbfd00000) // ./common/mmu.js:316
+        //{ // ./common/mmu.js:317
+        //    INFO("IO Reg readWord: " + address.toString(16)); // ./common/mmu.js:318
+        //    return 0; // ./common/mmu.js:319
+        //} // ./common/mmu.js:320
+        var addr = this.addressTranslation(address,0); // ./common/mmu.js:321
  // ./common/mmu.js:322
-        var addr = this.addressTranslation(address,0); // ./common/mmu.js:323
-		if(this.cpu.getEndianness() == 0) // ./common/mmu.js:324
-		{ // ./common/mmu.js:325
-			return this.physicalMemory.getUInt32LE(addr); // ./common/mmu.js:326
-		} // ./common/mmu.js:327
-		else // ./common/mmu.js:328
-		{ // ./common/mmu.js:329
-			return this.physicalMemory.getUInt32BE(addr); // ./common/mmu.js:330
-		} // ./common/mmu.js:331
-	} // ./common/mmu.js:332
- // ./common/mmu.js:333
-	this.writeWord = function(address, value) // ./common/mmu.js:334
-	{ // ./common/mmu.js:335
-        //if(address >= 0xbfd00000) // ./common/mmu.js:336
-        //{ // ./common/mmu.js:337
-        //    INFO("IO Reg writeWord: " + address.toString(16) + ", val: " + val.toString(16)); // ./common/mmu.js:338
-        //    return; // ./common/mmu.js:339
-        //} // ./common/mmu.js:340
-        //console.log("VA: " + address.toString(16)); // ./common/mmu.js:341
-        if((address >= this.uart.baseAddr) && (address <= this.uart.endAddr)) // ./common/mmu.js:342
-        { // ./common/mmu.js:343
-            this.uart.writeWord(address,val); // ./common/mmu.js:344
-            return; // ./common/mmu.js:345
-        } // ./common/mmu.js:346
- // ./common/mmu.js:347
-        var addr = this.addressTranslation(address,1); // ./common/mmu.js:348
-        //console.log("PA: " + addr.toString(16)); // ./common/mmu.js:349
-		if(this.cpu.getEndianness() == 0) // ./common/mmu.js:350
-		{ // ./common/mmu.js:351
-			return this.physicalMemory.putUInt32LE(addr, value >>> 0); // ./common/mmu.js:352
-		} // ./common/mmu.js:353
-		else // ./common/mmu.js:354
-		{ // ./common/mmu.js:355
-			return this.physicalMemory.putUInt32BE(addr, value >>> 0); // ./common/mmu.js:356
-		} // ./common/mmu.js:357
-	} // ./common/mmu.js:358
- // ./common/mmu.js:359
-    this.loadSREC = function(srecString, setEntry) // ./common/mmu.js:360
-    { // ./common/mmu.js:361
-        var srecLines = srecString.split("\n"); // ./common/mmu.js:362
- // ./common/mmu.js:363
-        for(i = 0; i < srecLines.length; i++) // ./common/mmu.js:364
-        { // ./common/mmu.js:365
-            if(srecLines[i] == "") // ./common/mmu.js:366
-            { // ./common/mmu.js:367
-                continue; // ./common/mmu.js:368
-            } // ./common/mmu.js:369
- // ./common/mmu.js:370
-            var l = srecLines[i]; // ./common/mmu.js:371
-            l = l.replace("\r",""); // ./common/mmu.js:372
-            var t = l[1]; // ./common/mmu.js:373
- // ./common/mmu.js:374
-            if(l[0] != 'S') // ./common/mmu.js:375
-            { // ./common/mmu.js:376
-                ERROR("Invalid srec record!"); // ./common/mmu.js:377
-                throw "Bad srecord"; // ./common/mmu.js:378
-            } // ./common/mmu.js:379
+        if((addr >= this.uart.baseAddr) && (addr <= this.uart.endAddr)) // ./common/mmu.js:323
+        { // ./common/mmu.js:324
+            return this.uart.readWord(addr); // ./common/mmu.js:325
+        } // ./common/mmu.js:326
+ // ./common/mmu.js:327
+ // ./common/mmu.js:328
+		if(this.cpu.getEndianness() == 0) // ./common/mmu.js:329
+		{ // ./common/mmu.js:330
+			return this.physicalMemory.getUInt32LE(addr); // ./common/mmu.js:331
+		} // ./common/mmu.js:332
+		else // ./common/mmu.js:333
+		{ // ./common/mmu.js:334
+			return this.physicalMemory.getUInt32BE(addr); // ./common/mmu.js:335
+		} // ./common/mmu.js:336
+	} // ./common/mmu.js:337
+ // ./common/mmu.js:338
+	this.writeWord = function(address, value) // ./common/mmu.js:339
+	{ // ./common/mmu.js:340
+        //if(address >= 0xbfd00000) // ./common/mmu.js:341
+        //{ // ./common/mmu.js:342
+        //    INFO("IO Reg writeWord: " + address.toString(16) + ", val: " + val.toString(16)); // ./common/mmu.js:343
+        //    return; // ./common/mmu.js:344
+        //} // ./common/mmu.js:345
+        //console.log("VA: " + address.toString(16)); // ./common/mmu.js:346
+        var addr = this.addressTranslation(address,1); // ./common/mmu.js:347
+ // ./common/mmu.js:348
+        if((addr >= this.uart.baseAddr) && (addr <= this.uart.endAddr)) // ./common/mmu.js:349
+        { // ./common/mmu.js:350
+            this.uart.writeWord(addr,val); // ./common/mmu.js:351
+            return; // ./common/mmu.js:352
+        } // ./common/mmu.js:353
+ // ./common/mmu.js:354
+        //console.log("PA: " + addr.toString(16)); // ./common/mmu.js:355
+		if(this.cpu.getEndianness() == 0) // ./common/mmu.js:356
+		{ // ./common/mmu.js:357
+			return this.physicalMemory.putUInt32LE(addr, value >>> 0); // ./common/mmu.js:358
+		} // ./common/mmu.js:359
+		else // ./common/mmu.js:360
+		{ // ./common/mmu.js:361
+			return this.physicalMemory.putUInt32BE(addr, value >>> 0); // ./common/mmu.js:362
+		} // ./common/mmu.js:363
+	} // ./common/mmu.js:364
+ // ./common/mmu.js:365
+    this.loadSREC = function(srecString, setEntry) // ./common/mmu.js:366
+    { // ./common/mmu.js:367
+        var srecLines = srecString.split("\n"); // ./common/mmu.js:368
+ // ./common/mmu.js:369
+        for(i = 0; i < srecLines.length; i++) // ./common/mmu.js:370
+        { // ./common/mmu.js:371
+            if(srecLines[i] == "") // ./common/mmu.js:372
+            { // ./common/mmu.js:373
+                continue; // ./common/mmu.js:374
+            } // ./common/mmu.js:375
+ // ./common/mmu.js:376
+            var l = srecLines[i]; // ./common/mmu.js:377
+            l = l.replace("\r",""); // ./common/mmu.js:378
+            var t = l[1]; // ./common/mmu.js:379
  // ./common/mmu.js:380
-            var count = l.substring(2,4); // ./common/mmu.js:381
-            var addr = ""; // ./common/mmu.js:382
-            var data = ""; // ./common/mmu.js:383
-            var dataEnd = l.length-2; // ./common/mmu.js:384
- // ./common/mmu.js:385
-            if(t == '0') // ./common/mmu.js:386
-            { // ./common/mmu.js:387
-                //DEBUG("Ignoring SREC header"); // ./common/mmu.js:388
-            } // ./common/mmu.js:389
-            else if(t == '1') // ./common/mmu.js:390
-            { // ./common/mmu.js:391
-                addr = l.substring(4,8); // ./common/mmu.js:392
-                data = l.substring(8, dataEnd); // ./common/mmu.js:393
-                //DEBUG("data 1 srec " + addr + " " + data); // ./common/mmu.js:394
+            if(l[0] != 'S') // ./common/mmu.js:381
+            { // ./common/mmu.js:382
+                ERROR("Invalid srec record!"); // ./common/mmu.js:383
+                throw "Bad srecord"; // ./common/mmu.js:384
+            } // ./common/mmu.js:385
+ // ./common/mmu.js:386
+            var count = l.substring(2,4); // ./common/mmu.js:387
+            var addr = ""; // ./common/mmu.js:388
+            var data = ""; // ./common/mmu.js:389
+            var dataEnd = l.length-2; // ./common/mmu.js:390
+ // ./common/mmu.js:391
+            if(t == '0') // ./common/mmu.js:392
+            { // ./common/mmu.js:393
+                //DEBUG("Ignoring SREC header"); // ./common/mmu.js:394
             } // ./common/mmu.js:395
-            else if(t == '2') // ./common/mmu.js:396
+            else if(t == '1') // ./common/mmu.js:396
             { // ./common/mmu.js:397
-                addr = l.substring(4,10); // ./common/mmu.js:398
-                data = l.substring(10, dataEnd); // ./common/mmu.js:399
-                //DEBUG("data 2 srec " + addr + " " + data); // ./common/mmu.js:400
+                addr = l.substring(4,8); // ./common/mmu.js:398
+                data = l.substring(8, dataEnd); // ./common/mmu.js:399
+                //DEBUG("data 1 srec " + addr + " " + data); // ./common/mmu.js:400
             } // ./common/mmu.js:401
-            else if(t == '3') // ./common/mmu.js:402
+            else if(t == '2') // ./common/mmu.js:402
             { // ./common/mmu.js:403
-                addr = l.substring(4,12); // ./common/mmu.js:404
-                data = l.substring(12, dataEnd); // ./common/mmu.js:405
-                //DEBUG("data 3 srec " + addr + " " + data); // ./common/mmu.js:406
+                addr = l.substring(4,10); // ./common/mmu.js:404
+                data = l.substring(10, dataEnd); // ./common/mmu.js:405
+                //DEBUG("data 2 srec " + addr + " " + data); // ./common/mmu.js:406
             } // ./common/mmu.js:407
-            else if(t == '5') // ./common/mmu.js:408
+            else if(t == '3') // ./common/mmu.js:408
             { // ./common/mmu.js:409
-                //DEBUG("Ignoring SREC record count field."); // ./common/mmu.js:410
-            } // ./common/mmu.js:411
-            else if((t == '7') | (t == '8') | (t == '9')) // ./common/mmu.js:412
-            { // ./common/mmu.js:413
-                count = parseInt(count,16)*2 -2; // ./common/mmu.js:414
-                addr = l.substring(4,4+count); // ./common/mmu.js:415
-                DEBUG("Entry point srec: " + addr); // ./common/mmu.js:416
- // ./common/mmu.js:417
-                if(setEntry == 1) // ./common/mmu.js:418
-                { // ./common/mmu.js:419
-                    this.cpu.PC.putUInt32(parseInt(addr,16)); // ./common/mmu.js:420
-                } // ./common/mmu.js:421
-            } // ./common/mmu.js:422
-            else // ./common/mmu.js:423
-            { // ./common/mmu.js:424
-                ERROR("Unknown SREC type: " + t); // ./common/mmu.js:425
-                throw "Bad srecord"; // ./common/mmu.js:426
-                return; // ./common/mmu.js:427
+                addr = l.substring(4,12); // ./common/mmu.js:410
+                data = l.substring(12, dataEnd); // ./common/mmu.js:411
+                //DEBUG("data 3 srec " + addr + " " + data); // ./common/mmu.js:412
+            } // ./common/mmu.js:413
+            else if(t == '5') // ./common/mmu.js:414
+            { // ./common/mmu.js:415
+                //DEBUG("Ignoring SREC record count field."); // ./common/mmu.js:416
+            } // ./common/mmu.js:417
+            else if((t == '7') | (t == '8') | (t == '9')) // ./common/mmu.js:418
+            { // ./common/mmu.js:419
+                count = parseInt(count,16)*2 -2; // ./common/mmu.js:420
+                addr = l.substring(4,4+count); // ./common/mmu.js:421
+                DEBUG("Entry point srec: " + addr); // ./common/mmu.js:422
+ // ./common/mmu.js:423
+                if(setEntry == 1) // ./common/mmu.js:424
+                { // ./common/mmu.js:425
+                    this.cpu.PC.putUInt32(parseInt(addr,16)); // ./common/mmu.js:426
+                } // ./common/mmu.js:427
             } // ./common/mmu.js:428
- // ./common/mmu.js:429
-            if((t == '1') | (t == '2') | (t == '3')) // ./common/mmu.js:430
-            { // ./common/mmu.js:431
-                if((data.length % 2) != 0) // ./common/mmu.js:432
-                { // ./common/mmu.js:433
-                    ERROR("Length of data in SREC record is not valid: " + data.length); // ./common/mmu.js:434
-                    throw "Bad srecord"; // ./common/mmu.js:435
-                } // ./common/mmu.js:436
- // ./common/mmu.js:437
-                addr = parseInt(addr, 16); // ./common/mmu.js:438
- // ./common/mmu.js:439
-                for(j = 0; j < data.length; j+= 2) // ./common/mmu.js:440
-                { // ./common/mmu.js:441
-                   var dataByteStr = data.substring(j,j+2); // ./common/mmu.js:442
-                   var b = parseInt(dataByteStr,16); // ./common/mmu.js:443
-                   var offset = j/2; // ./common/mmu.js:444
-                   this.writeByte(addr + offset, b); // ./common/mmu.js:445
-                } // ./common/mmu.js:446
-            } // ./common/mmu.js:447
-        } // ./common/mmu.js:448
-    } // ./common/mmu.js:449
-} // ./common/mmu.js:450
+            else // ./common/mmu.js:429
+            { // ./common/mmu.js:430
+                ERROR("Unknown SREC type: " + t); // ./common/mmu.js:431
+                throw "Bad srecord"; // ./common/mmu.js:432
+                return; // ./common/mmu.js:433
+            } // ./common/mmu.js:434
+ // ./common/mmu.js:435
+            if((t == '1') | (t == '2') | (t == '3')) // ./common/mmu.js:436
+            { // ./common/mmu.js:437
+                if((data.length % 2) != 0) // ./common/mmu.js:438
+                { // ./common/mmu.js:439
+                    ERROR("Length of data in SREC record is not valid: " + data.length); // ./common/mmu.js:440
+                    throw "Bad srecord"; // ./common/mmu.js:441
+                } // ./common/mmu.js:442
+ // ./common/mmu.js:443
+                addr = parseInt(addr, 16); // ./common/mmu.js:444
+ // ./common/mmu.js:445
+                for(j = 0; j < data.length; j+= 2) // ./common/mmu.js:446
+                { // ./common/mmu.js:447
+                   var dataByteStr = data.substring(j,j+2); // ./common/mmu.js:448
+                   var b = parseInt(dataByteStr,16); // ./common/mmu.js:449
+                   var offset = j/2; // ./common/mmu.js:450
+                   this.writeByte(addr + offset, b); // ./common/mmu.js:451
+                } // ./common/mmu.js:452
+            } // ./common/mmu.js:453
+        } // ./common/mmu.js:454
+    } // ./common/mmu.js:455
+} // ./common/mmu.js:456
  // ./common/null_serial.js:0
  // ./common/null_serial.js:1
  // ./common/null_serial.js:2
@@ -10201,41 +10207,43 @@ function handleCommand(data) { // ./node/node_main.js:332
  // ./node/node_main.js:353
 var dbgserver = net.createServer(function(c) { //'connection' listener // ./node/node_main.js:354
  // ./node/node_main.js:355
-  c.on('end', function() { // ./node/node_main.js:356
-    INFO('debugger disconnected'); // ./node/node_main.js:357
-  }); // ./node/node_main.js:358
- // ./node/node_main.js:359
-  c.on('connect', function() { // ./node/node_main.js:360
-    INFO('debugger connected'); // ./node/node_main.js:361
-  }); // ./node/node_main.js:362
+  INFO('debugger connected'); // ./node/node_main.js:356
+ // ./node/node_main.js:357
+  c.on('end', function() { // ./node/node_main.js:358
+    INFO('debugger disconnected'); // ./node/node_main.js:359
+  }); // ./node/node_main.js:360
+ // ./node/node_main.js:361
+  c.on("data", handleCommand); // ./node/node_main.js:362
  // ./node/node_main.js:363
-  c.on("data", handleCommand); // ./node/node_main.js:364
+}); // ./node/node_main.js:364
  // ./node/node_main.js:365
-}); // ./node/node_main.js:366
- // ./node/node_main.js:367
-dbgserver.listen(8123, function() { //'listening' listener // ./node/node_main.js:368
-    INFO('server bound'); // ./node/node_main.js:369
-}); // ./node/node_main.js:370
+dbgserver.listen(8123, function() { //'listening' listener // ./node/node_main.js:366
+    INFO('server bound'); // ./node/node_main.js:367
+}); // ./node/node_main.js:368
+ // ./node/node_main.js:369
+ // ./node/node_main.js:370
  // ./node/node_main.js:371
- // ./node/node_main.js:372
+var serialServer = net.createServer(function(c) { //'connection' listener // ./node/node_main.js:372
  // ./node/node_main.js:373
-var serialServer = net.createServer(function(c) { //'connection' listener // ./node/node_main.js:374
- // ./node/node_main.js:375
-  c.on('end', function() { // ./node/node_main.js:376
-    INFO('serialServer disconnected'); // ./node/node_main.js:377
-    removeSerialSocket(this); // ./node/node_main.js:378
-  }); // ./node/node_main.js:379
- // ./node/node_main.js:380
-  c.on('connect', function() { // ./node/node_main.js:381
-    INFO('serialServer connected'); // ./node/node_main.js:382
-    registerSerialSocket(this); // ./node/node_main.js:383
- // ./node/node_main.js:384
-  }); // ./node/node_main.js:385
+  INFO('serialServer connected'); // ./node/node_main.js:374
+  registerSerialSocket(this); // ./node/node_main.js:375
+ // ./node/node_main.js:376
+  c.on('end', function() { // ./node/node_main.js:377
+    INFO('serialServer disconnected'); // ./node/node_main.js:378
+    removeSerialSocket(this); // ./node/node_main.js:379
+  }); // ./node/node_main.js:380
+ // ./node/node_main.js:381
+  c.on("data", function(d){ // ./node/node_main.js:382
+	  data = new String(d).split("\n")[0]; // ./node/node_main.js:383
+	  INFO(data); // ./node/node_main.js:384
+  } ); // ./node/node_main.js:387 // ./node/node_main.js:385
  // ./node/node_main.js:386
-  c.on("data", function(d){INFO(d);} ); // ./node/node_main.js:387
- // ./node/node_main.js:388
-}); // ./node/node_main.js:389
+  this.write = function(data) { // ./node/node_main.js:387
+	  terminal(data); // ./node/node_main.js:388
+  }; // ./node/node_main.js:389
  // ./node/node_main.js:390
-serialServer.listen(8124, function() { //'listening' listener // ./node/node_main.js:391
-    INFO('server bound'); // ./node/node_main.js:392
-}); // ./node/node_main.js:393
+}); // ./node/node_main.js:391
+ // ./node/node_main.js:392
+serialServer.listen(8124, function() { //'listening' listener // ./node/node_main.js:393
+    INFO('server bound'); // ./node/node_main.js:394
+}); // ./node/node_main.js:395

@@ -21,11 +21,20 @@ char* itoa(unsigned int val, int base){
 	
 }
 
+void putc(char c) {
+    volatile unsigned char* r = (volatile unsigned char*)(0xbf000900+5);
+    volatile unsigned char* w = (volatile unsigned char*)(0xbf000900);
 
-void print(char * s){
-    //TODO
+    while(*r == 0);
+    *w = c;
 }
 
+void print(char * s){
+    while(*s != '\0') {
+        putc(*s);
+        s++;
+    }
+}
 
 unsigned int * terminate = (unsigned int *)0x80000000;
 
@@ -49,6 +58,8 @@ void exit(int val){
 
 void kmain(void)
 {
+    print("kernel starting\n");
+
     if( main() != 0 ){
         fail();
     }

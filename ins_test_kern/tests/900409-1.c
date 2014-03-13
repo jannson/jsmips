@@ -16,6 +16,7 @@ int main ()
       f5(a)!=0x0000CDEFL||
       f6(a)!=0x89AB0000L) {
     abort();
+    return 1;
   }
 
   exit(0);

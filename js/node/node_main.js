@@ -354,14 +354,12 @@ function handleCommand(data) {
 
 var dbgserver = net.createServer(function(c) { //'connection' listener
 
+  INFO('debugger connected');
+
   c.on('end', function() {
     INFO('debugger disconnected');
   });
   
-  c.on('connect', function() {
-    INFO('debugger connected');
-  });
-
   c.on("data", handleCommand);
 
 });
@@ -374,18 +372,22 @@ dbgserver.listen(8123, function() { //'listening' listener
 
 var serialServer = net.createServer(function(c) { //'connection' listener
 
+  INFO('serialServer connected');
+  registerSerialSocket(this);
+
   c.on('end', function() {
     INFO('serialServer disconnected');
     removeSerialSocket(this);
   });
   
-  c.on('connect', function() {
-    INFO('serialServer connected');
-    registerSerialSocket(this);
-    
-  });
+  c.on("data", function(d){
+	  data = new String(d).split("\n")[0];
+	  INFO(data);
+  } ); // ./node/node_main.js:387
 
-  c.on("data", function(d){} );
+  this.write = function(data) {
+	  terminal(data);
+  };
 
 });
 

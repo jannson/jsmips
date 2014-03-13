@@ -9600,181 +9600,187 @@ function Mmu(size) { // ./common/mmu.js:12
         this.physicalMemory.putUInt16BE(this.addressTranslation(address,1), val); // ./common/mmu.js:273
     } // ./common/mmu.js:274
  // ./common/mmu.js:275
-    this.readByte = function(address) // ./common/mmu.js:276
+    this.readByte = function(address_in) // ./common/mmu.js:276
     { // ./common/mmu.js:277
-        //if(address >= 0xbfd00000) // ./common/mmu.js:278
-        //{ // ./common/mmu.js:279
-        //    INFO("IO Reg readByte: " + address.toString(16)); // ./common/mmu.js:280
-        //    return 0; // ./common/mmu.js:281
-        //} // ./common/mmu.js:282
-        if((address >= this.uart.baseAddr) && (address <= this.uart.endAddr)) // ./common/mmu.js:283
-        { // ./common/mmu.js:284
-            return this.uart.readByte(address); // ./common/mmu.js:285
-        } // ./common/mmu.js:286
-        else // ./common/mmu.js:287
-        { // ./common/mmu.js:288
-            return this.physicalMemory.getByte(this.addressTranslation(address,0)); // ./common/mmu.js:289
-        } // ./common/mmu.js:290
-    } // ./common/mmu.js:291
- // ./common/mmu.js:292
-    this.writeByte = function(address, val) // ./common/mmu.js:293
-    { // ./common/mmu.js:294
-        //if(address >= 0xbfd00000) // ./common/mmu.js:295
-        //{ // ./common/mmu.js:296
-        //    INFO("IO Reg writeByte: " + address.toString(16) + ", val: " + val.toString(16)); // ./common/mmu.js:297
-        //    return; // ./common/mmu.js:298
-        //} // ./common/mmu.js:299
-        if((address >= this.uart.baseAddr) && (address <= this.uart.endAddr)) // ./common/mmu.js:300
-        { // ./common/mmu.js:301
-            this.uart.writeByte(address,val); // ./common/mmu.js:302
-        } // ./common/mmu.js:303
-        else // ./common/mmu.js:304
+		address = this.addressTranslation(address_in, 0); // ./common/mmu.js:278
+ // ./common/mmu.js:279
+        //if(address >= 0xbfd00000) // ./common/mmu.js:280
+        //{ // ./common/mmu.js:281
+        //    INFO("IO Reg readByte: " + address.toString(16)); // ./common/mmu.js:282
+        //    return 0; // ./common/mmu.js:283
+        //} // ./common/mmu.js:284
+        if((address >= this.uart.baseAddr) && (address <= this.uart.endAddr)) // ./common/mmu.js:285
+        { // ./common/mmu.js:286
+            return this.uart.readByte(address); // ./common/mmu.js:287
+        } // ./common/mmu.js:288
+        else // ./common/mmu.js:289
+        { // ./common/mmu.js:290
+            return this.physicalMemory.getByte(address); // ./common/mmu.js:291
+        } // ./common/mmu.js:292
+    } // ./common/mmu.js:293
+ // ./common/mmu.js:294
+    this.writeByte = function(address_in, val) // ./common/mmu.js:295
+    { // ./common/mmu.js:296
+		address = this.addressTranslation(address_in,1); // ./common/mmu.js:297
+ // ./common/mmu.js:298
+        //if(address >= 0xbfd00000) // ./common/mmu.js:299
+        //{ // ./common/mmu.js:300
+        //    INFO("IO Reg writeByte: " + address.toString(16) + ", val: " + val.toString(16)); // ./common/mmu.js:301
+        //    return; // ./common/mmu.js:302
+        //} // ./common/mmu.js:303
+        if((address >= this.uart.baseAddr) && (address <= this.uart.endAddr)) // ./common/mmu.js:304
         { // ./common/mmu.js:305
-            this.physicalMemory.putByte(this.addressTranslation(address,1), val); // ./common/mmu.js:306
+            this.uart.writeByte(address,val); // ./common/mmu.js:306
         } // ./common/mmu.js:307
-    } // ./common/mmu.js:308
- // ./common/mmu.js:309
-	this.readWord = function(address) // ./common/mmu.js:310
-	{ // ./common/mmu.js:311
-        //if(address >= 0xbfd00000) // ./common/mmu.js:312
-        //{ // ./common/mmu.js:313
-        //    INFO("IO Reg readWord: " + address.toString(16)); // ./common/mmu.js:314
-        //    return 0; // ./common/mmu.js:315
-        //} // ./common/mmu.js:316
-        if((address >= this.uart.baseAddr) && (address <= this.uart.endAddr)) // ./common/mmu.js:317
-        { // ./common/mmu.js:318
-            return this.uart.readWord(address); // ./common/mmu.js:319
-        } // ./common/mmu.js:320
- // ./common/mmu.js:321
+        else // ./common/mmu.js:308
+        { // ./common/mmu.js:309
+            this.physicalMemory.putByte(address, val); // ./common/mmu.js:310
+        } // ./common/mmu.js:311
+    } // ./common/mmu.js:312
+ // ./common/mmu.js:313
+	this.readWord = function(address) // ./common/mmu.js:314
+	{ // ./common/mmu.js:315
+        //if(address >= 0xbfd00000) // ./common/mmu.js:316
+        //{ // ./common/mmu.js:317
+        //    INFO("IO Reg readWord: " + address.toString(16)); // ./common/mmu.js:318
+        //    return 0; // ./common/mmu.js:319
+        //} // ./common/mmu.js:320
+        var addr = this.addressTranslation(address,0); // ./common/mmu.js:321
  // ./common/mmu.js:322
-        var addr = this.addressTranslation(address,0); // ./common/mmu.js:323
-		if(this.cpu.getEndianness() == 0) // ./common/mmu.js:324
-		{ // ./common/mmu.js:325
-			return this.physicalMemory.getUInt32LE(addr); // ./common/mmu.js:326
-		} // ./common/mmu.js:327
-		else // ./common/mmu.js:328
-		{ // ./common/mmu.js:329
-			return this.physicalMemory.getUInt32BE(addr); // ./common/mmu.js:330
-		} // ./common/mmu.js:331
-	} // ./common/mmu.js:332
- // ./common/mmu.js:333
-	this.writeWord = function(address, value) // ./common/mmu.js:334
-	{ // ./common/mmu.js:335
-        //if(address >= 0xbfd00000) // ./common/mmu.js:336
-        //{ // ./common/mmu.js:337
-        //    INFO("IO Reg writeWord: " + address.toString(16) + ", val: " + val.toString(16)); // ./common/mmu.js:338
-        //    return; // ./common/mmu.js:339
-        //} // ./common/mmu.js:340
-        //console.log("VA: " + address.toString(16)); // ./common/mmu.js:341
-        if((address >= this.uart.baseAddr) && (address <= this.uart.endAddr)) // ./common/mmu.js:342
-        { // ./common/mmu.js:343
-            this.uart.writeWord(address,val); // ./common/mmu.js:344
-            return; // ./common/mmu.js:345
-        } // ./common/mmu.js:346
- // ./common/mmu.js:347
-        var addr = this.addressTranslation(address,1); // ./common/mmu.js:348
-        //console.log("PA: " + addr.toString(16)); // ./common/mmu.js:349
-		if(this.cpu.getEndianness() == 0) // ./common/mmu.js:350
-		{ // ./common/mmu.js:351
-			return this.physicalMemory.putUInt32LE(addr, value >>> 0); // ./common/mmu.js:352
-		} // ./common/mmu.js:353
-		else // ./common/mmu.js:354
-		{ // ./common/mmu.js:355
-			return this.physicalMemory.putUInt32BE(addr, value >>> 0); // ./common/mmu.js:356
-		} // ./common/mmu.js:357
-	} // ./common/mmu.js:358
- // ./common/mmu.js:359
-    this.loadSREC = function(srecString, setEntry) // ./common/mmu.js:360
-    { // ./common/mmu.js:361
-        var srecLines = srecString.split("\n"); // ./common/mmu.js:362
- // ./common/mmu.js:363
-        for(i = 0; i < srecLines.length; i++) // ./common/mmu.js:364
-        { // ./common/mmu.js:365
-            if(srecLines[i] == "") // ./common/mmu.js:366
-            { // ./common/mmu.js:367
-                continue; // ./common/mmu.js:368
-            } // ./common/mmu.js:369
- // ./common/mmu.js:370
-            var l = srecLines[i]; // ./common/mmu.js:371
-            l = l.replace("\r",""); // ./common/mmu.js:372
-            var t = l[1]; // ./common/mmu.js:373
- // ./common/mmu.js:374
-            if(l[0] != 'S') // ./common/mmu.js:375
-            { // ./common/mmu.js:376
-                ERROR("Invalid srec record!"); // ./common/mmu.js:377
-                throw "Bad srecord"; // ./common/mmu.js:378
-            } // ./common/mmu.js:379
+        if((addr >= this.uart.baseAddr) && (addr <= this.uart.endAddr)) // ./common/mmu.js:323
+        { // ./common/mmu.js:324
+            return this.uart.readWord(addr); // ./common/mmu.js:325
+        } // ./common/mmu.js:326
+ // ./common/mmu.js:327
+ // ./common/mmu.js:328
+		if(this.cpu.getEndianness() == 0) // ./common/mmu.js:329
+		{ // ./common/mmu.js:330
+			return this.physicalMemory.getUInt32LE(addr); // ./common/mmu.js:331
+		} // ./common/mmu.js:332
+		else // ./common/mmu.js:333
+		{ // ./common/mmu.js:334
+			return this.physicalMemory.getUInt32BE(addr); // ./common/mmu.js:335
+		} // ./common/mmu.js:336
+	} // ./common/mmu.js:337
+ // ./common/mmu.js:338
+	this.writeWord = function(address, value) // ./common/mmu.js:339
+	{ // ./common/mmu.js:340
+        //if(address >= 0xbfd00000) // ./common/mmu.js:341
+        //{ // ./common/mmu.js:342
+        //    INFO("IO Reg writeWord: " + address.toString(16) + ", val: " + val.toString(16)); // ./common/mmu.js:343
+        //    return; // ./common/mmu.js:344
+        //} // ./common/mmu.js:345
+        //console.log("VA: " + address.toString(16)); // ./common/mmu.js:346
+        var addr = this.addressTranslation(address,1); // ./common/mmu.js:347
+ // ./common/mmu.js:348
+        if((addr >= this.uart.baseAddr) && (addr <= this.uart.endAddr)) // ./common/mmu.js:349
+        { // ./common/mmu.js:350
+            this.uart.writeWord(addr,val); // ./common/mmu.js:351
+            return; // ./common/mmu.js:352
+        } // ./common/mmu.js:353
+ // ./common/mmu.js:354
+        //console.log("PA: " + addr.toString(16)); // ./common/mmu.js:355
+		if(this.cpu.getEndianness() == 0) // ./common/mmu.js:356
+		{ // ./common/mmu.js:357
+			return this.physicalMemory.putUInt32LE(addr, value >>> 0); // ./common/mmu.js:358
+		} // ./common/mmu.js:359
+		else // ./common/mmu.js:360
+		{ // ./common/mmu.js:361
+			return this.physicalMemory.putUInt32BE(addr, value >>> 0); // ./common/mmu.js:362
+		} // ./common/mmu.js:363
+	} // ./common/mmu.js:364
+ // ./common/mmu.js:365
+    this.loadSREC = function(srecString, setEntry) // ./common/mmu.js:366
+    { // ./common/mmu.js:367
+        var srecLines = srecString.split("\n"); // ./common/mmu.js:368
+ // ./common/mmu.js:369
+        for(i = 0; i < srecLines.length; i++) // ./common/mmu.js:370
+        { // ./common/mmu.js:371
+            if(srecLines[i] == "") // ./common/mmu.js:372
+            { // ./common/mmu.js:373
+                continue; // ./common/mmu.js:374
+            } // ./common/mmu.js:375
+ // ./common/mmu.js:376
+            var l = srecLines[i]; // ./common/mmu.js:377
+            l = l.replace("\r",""); // ./common/mmu.js:378
+            var t = l[1]; // ./common/mmu.js:379
  // ./common/mmu.js:380
-            var count = l.substring(2,4); // ./common/mmu.js:381
-            var addr = ""; // ./common/mmu.js:382
-            var data = ""; // ./common/mmu.js:383
-            var dataEnd = l.length-2; // ./common/mmu.js:384
- // ./common/mmu.js:385
-            if(t == '0') // ./common/mmu.js:386
-            { // ./common/mmu.js:387
-                //DEBUG("Ignoring SREC header"); // ./common/mmu.js:388
-            } // ./common/mmu.js:389
-            else if(t == '1') // ./common/mmu.js:390
-            { // ./common/mmu.js:391
-                addr = l.substring(4,8); // ./common/mmu.js:392
-                data = l.substring(8, dataEnd); // ./common/mmu.js:393
-                //DEBUG("data 1 srec " + addr + " " + data); // ./common/mmu.js:394
+            if(l[0] != 'S') // ./common/mmu.js:381
+            { // ./common/mmu.js:382
+                ERROR("Invalid srec record!"); // ./common/mmu.js:383
+                throw "Bad srecord"; // ./common/mmu.js:384
+            } // ./common/mmu.js:385
+ // ./common/mmu.js:386
+            var count = l.substring(2,4); // ./common/mmu.js:387
+            var addr = ""; // ./common/mmu.js:388
+            var data = ""; // ./common/mmu.js:389
+            var dataEnd = l.length-2; // ./common/mmu.js:390
+ // ./common/mmu.js:391
+            if(t == '0') // ./common/mmu.js:392
+            { // ./common/mmu.js:393
+                //DEBUG("Ignoring SREC header"); // ./common/mmu.js:394
             } // ./common/mmu.js:395
-            else if(t == '2') // ./common/mmu.js:396
+            else if(t == '1') // ./common/mmu.js:396
             { // ./common/mmu.js:397
-                addr = l.substring(4,10); // ./common/mmu.js:398
-                data = l.substring(10, dataEnd); // ./common/mmu.js:399
-                //DEBUG("data 2 srec " + addr + " " + data); // ./common/mmu.js:400
+                addr = l.substring(4,8); // ./common/mmu.js:398
+                data = l.substring(8, dataEnd); // ./common/mmu.js:399
+                //DEBUG("data 1 srec " + addr + " " + data); // ./common/mmu.js:400
             } // ./common/mmu.js:401
-            else if(t == '3') // ./common/mmu.js:402
+            else if(t == '2') // ./common/mmu.js:402
             { // ./common/mmu.js:403
-                addr = l.substring(4,12); // ./common/mmu.js:404
-                data = l.substring(12, dataEnd); // ./common/mmu.js:405
-                //DEBUG("data 3 srec " + addr + " " + data); // ./common/mmu.js:406
+                addr = l.substring(4,10); // ./common/mmu.js:404
+                data = l.substring(10, dataEnd); // ./common/mmu.js:405
+                //DEBUG("data 2 srec " + addr + " " + data); // ./common/mmu.js:406
             } // ./common/mmu.js:407
-            else if(t == '5') // ./common/mmu.js:408
+            else if(t == '3') // ./common/mmu.js:408
             { // ./common/mmu.js:409
-                //DEBUG("Ignoring SREC record count field."); // ./common/mmu.js:410
-            } // ./common/mmu.js:411
-            else if((t == '7') | (t == '8') | (t == '9')) // ./common/mmu.js:412
-            { // ./common/mmu.js:413
-                count = parseInt(count,16)*2 -2; // ./common/mmu.js:414
-                addr = l.substring(4,4+count); // ./common/mmu.js:415
-                DEBUG("Entry point srec: " + addr); // ./common/mmu.js:416
- // ./common/mmu.js:417
-                if(setEntry == 1) // ./common/mmu.js:418
-                { // ./common/mmu.js:419
-                    this.cpu.PC.putUInt32(parseInt(addr,16)); // ./common/mmu.js:420
-                } // ./common/mmu.js:421
-            } // ./common/mmu.js:422
-            else // ./common/mmu.js:423
-            { // ./common/mmu.js:424
-                ERROR("Unknown SREC type: " + t); // ./common/mmu.js:425
-                throw "Bad srecord"; // ./common/mmu.js:426
-                return; // ./common/mmu.js:427
+                addr = l.substring(4,12); // ./common/mmu.js:410
+                data = l.substring(12, dataEnd); // ./common/mmu.js:411
+                //DEBUG("data 3 srec " + addr + " " + data); // ./common/mmu.js:412
+            } // ./common/mmu.js:413
+            else if(t == '5') // ./common/mmu.js:414
+            { // ./common/mmu.js:415
+                //DEBUG("Ignoring SREC record count field."); // ./common/mmu.js:416
+            } // ./common/mmu.js:417
+            else if((t == '7') | (t == '8') | (t == '9')) // ./common/mmu.js:418
+            { // ./common/mmu.js:419
+                count = parseInt(count,16)*2 -2; // ./common/mmu.js:420
+                addr = l.substring(4,4+count); // ./common/mmu.js:421
+                DEBUG("Entry point srec: " + addr); // ./common/mmu.js:422
+ // ./common/mmu.js:423
+                if(setEntry == 1) // ./common/mmu.js:424
+                { // ./common/mmu.js:425
+                    this.cpu.PC.putUInt32(parseInt(addr,16)); // ./common/mmu.js:426
+                } // ./common/mmu.js:427
             } // ./common/mmu.js:428
- // ./common/mmu.js:429
-            if((t == '1') | (t == '2') | (t == '3')) // ./common/mmu.js:430
-            { // ./common/mmu.js:431
-                if((data.length % 2) != 0) // ./common/mmu.js:432
-                { // ./common/mmu.js:433
-                    ERROR("Length of data in SREC record is not valid: " + data.length); // ./common/mmu.js:434
-                    throw "Bad srecord"; // ./common/mmu.js:435
-                } // ./common/mmu.js:436
- // ./common/mmu.js:437
-                addr = parseInt(addr, 16); // ./common/mmu.js:438
- // ./common/mmu.js:439
-                for(j = 0; j < data.length; j+= 2) // ./common/mmu.js:440
-                { // ./common/mmu.js:441
-                   var dataByteStr = data.substring(j,j+2); // ./common/mmu.js:442
-                   var b = parseInt(dataByteStr,16); // ./common/mmu.js:443
-                   var offset = j/2; // ./common/mmu.js:444
-                   this.writeByte(addr + offset, b); // ./common/mmu.js:445
-                } // ./common/mmu.js:446
-            } // ./common/mmu.js:447
-        } // ./common/mmu.js:448
-    } // ./common/mmu.js:449
-} // ./common/mmu.js:450
+            else // ./common/mmu.js:429
+            { // ./common/mmu.js:430
+                ERROR("Unknown SREC type: " + t); // ./common/mmu.js:431
+                throw "Bad srecord"; // ./common/mmu.js:432
+                return; // ./common/mmu.js:433
+            } // ./common/mmu.js:434
+ // ./common/mmu.js:435
+            if((t == '1') | (t == '2') | (t == '3')) // ./common/mmu.js:436
+            { // ./common/mmu.js:437
+                if((data.length % 2) != 0) // ./common/mmu.js:438
+                { // ./common/mmu.js:439
+                    ERROR("Length of data in SREC record is not valid: " + data.length); // ./common/mmu.js:440
+                    throw "Bad srecord"; // ./common/mmu.js:441
+                } // ./common/mmu.js:442
+ // ./common/mmu.js:443
+                addr = parseInt(addr, 16); // ./common/mmu.js:444
+ // ./common/mmu.js:445
+                for(j = 0; j < data.length; j+= 2) // ./common/mmu.js:446
+                { // ./common/mmu.js:447
+                   var dataByteStr = data.substring(j,j+2); // ./common/mmu.js:448
+                   var b = parseInt(dataByteStr,16); // ./common/mmu.js:449
+                   var offset = j/2; // ./common/mmu.js:450
+                   this.writeByte(addr + offset, b); // ./common/mmu.js:451
+                } // ./common/mmu.js:452
+            } // ./common/mmu.js:453
+        } // ./common/mmu.js:454
+    } // ./common/mmu.js:455
+} // ./common/mmu.js:456
 /* This class represents the emulator as a whole, it contains all the hardware. // ./common/Emu.js:0
 */ // ./common/Emu.js:1
  // ./common/Emu.js:2
@@ -9806,7 +9812,7 @@ function Emulator() { // ./common/Emu.js:4
  // ./common/Emu.js:28
  // ./common/Emu.js:29
 } // ./common/Emu.js:30
-var browser_srec = "S01500006B65726E656C5F65756C6572312E73726563E1\r\nS315A00000000800005B3C1DA1FF0000000000000000EE\r\nS315A00000103C0255553C0366663448555634696667B6\r\nS315A00000202404000100003021240703E800880018FA\r\nS315A000003000042FC300001810006518230003104009\r\nS315A0000040004310211082001000890018000018102B\r\nS315A000005000031843006518230003108000431021F5\r\nS315A00000601082000900000000248400011487FFF01C\r\nS315A0000070008800183C02FFFC3442713000C21021F7\r\nS315A000008003E000080002102B00C4302124840001E4\r\nS315A00000901487FFE7008800180800001E3C02FFFC3A\r\nS315A00000A0008030211480000700A040213C02A0005F\r\nS315A00000B02445202F24030030A043202F03E000086E\r\nS315A00000C000A010213C02A0003C03A000244A20105E\r\nS315A00000D024691000080000392407001E10E0000E55\r\nS315A00000E03C02A0001500000200C8001B0007000D7E\r\nS315A00000F000EA282124E7FFFF000010100049102184\r\nS315A00001009043000000002012008030211480FFF3ED\r\nS315A0000110A0A300003C02A0002442201100E2282156\r\nS315A000012003E0000800A0102103E000080000000082\r\nS315A00001303C02A0008C4420002403000103E0000838\r\nS315A0000140AC8300003C02A0008C43200003E0000822\r\nS315A0000150AC6000000800004C000000003C02A000BB\r\nS315A00001608C43200003E00008AC64000027BDFFE834\r\nS315A0000170AFBF00100C0000040000000010400003F8\r\nS315A0000180000000000C00004C000000008FBF001013\r\nS315A00001900800005127BD0018000000000000000064\r\nS315A000100030313233343536373839616263646566D8\r\nS309A00010100000000036\r\nS315A00010142000000000000000000000000000000006\r\nS30DA000102400000000000000001E\r\nS315A000200080000000000000000000000000000000AA\r\nS705A00000005A\r\n"; // ./browser/browser_srec.js:0
+var browser_srec = "S01700006B65726E656C5F3930303430392D312E7372656399\r\nS315A00000000800014B3C1DA1FF0000000000000000FD\r\nS315A000001027BDFFF8AFBE000003A0F021AFC40008C3\r\nS315A00000208FC300083C02FF000062102403C0E82131\r\nS315A00000308FBE000027BD000803E0000800000000F6\r\nS315A000004027BDFFF8AFBE000003A0F021AFC4000893\r\nS315A00000508FC300083C0200FF3442FFFF0062102459\r\nS315A000006003C0E8218FBE000027BD000803E00008FA\r\nS315A00000700000000027BDFFF8AFBE000003A0F021DE\r\nS315A0000080AFC400088FC2000800000000304200FF85\r\nS315A000009003C0E8218FBE000027BD000803E00008CA\r\nS315A00000A00000000027BDFFF8AFBE000003A0F021AE\r\nS315A00000B0AFC400088FC300082402FF00006210240A\r\nS315A00000C003C0E8218FBE000027BD000803E000089A\r\nS315A00000D00000000027BDFFF8AFBE000003A0F0217E\r\nS315A00000E0AFC400088FC20008000000003042FFFF26\r\nS315A00000F003C0E8218FBE000027BD000803E000086A\r\nS315A00001000000000027BDFFF8AFBE000003A0F0214D\r\nS315A0000110AFC400088FC300083C02FFFF0062102492\r\nS315A000012003C0E8218FBE000027BD000803E0000839\r\nS315A00001300000000027BDFFD8AFBF0024AFBE00203F\r\nS315A000014003A0F0213C0289AB3442CDEFAFC2001030\r\nS315A00001508FC400100C00000400000000004018210D\r\nS315A00001603C02890014620024000000008FC4001025\r\nS315A00001700C000010000000003C0300AB3463CDEF80\r\nS315A00001801443001D000000008FC400100C00001DC9\r\nS315A00001900000000000401821240200EF146200169F\r\nS315A00001A0000000008FC400100C0000290000000011\r\nS315A00001B03C0389AB3463CD001443000F000000005C\r\nS315A00001C08FC400100C00003500000000004018216C\r\nS315A00001D03402CDEF14620008000000008FC40010A6\r\nS315A00001E00C00004100000000004018213C0289AB31\r\nS315A00001F010620007000000000C00013100000000A2\r\nS315A000020024020001AFC20018080000880000000008\r\nS315A0000210000020210C00013D00000000AFC0001826\r\nS315A00002208FC2001803C0E8218FBF00248FBE002014\r\nS315A000023027BD002803E00008000000000000000021\r\nS315A000024027BDFFE8AFBE001003A0F021AFC4001881\r\nS315A0000250AFC5001C2402001EAFC200008FC200184A\r\nS315A00002600000000014400027000000003C02A0008F\r\nS315A00002702443201024020030A062001F3C02A000EC\r\nS315A00002802442202FAFC20008080000CE00000000C4\r\nS315A00002908FC400008FC3001C8FC20018000000008E\r\nS315A00002A0146000020043001B0007000D00001010A0\r\nS315A00002B0004018213C02A000244210000062102138\r\nS315A00002C0804300003C02A00024422010008210219E\r\nS315A00002D0A04300008FC20000000000002442FFFFE0\r\nS315A00002E0AFC200008FC3001C8FC200180000000020\r\nS315A00002F0146000020043001B0007000D000010124E\r\nS315A0000300AFC200188FC20018000000001040000500\r\nS315A0000310000000008FC20000000000001440FFDCB7\r\nS315A0000320000000008FC200003C03A000246320113F\r\nS315A000033000431021AFC200088FC2000803C0E82105\r\nS315A00003408FBE001027BD001803E0000800000000C3\r\nS315A000035027BDFFF0AFBE000803A0F021008010214A\r\nS315A0000360A3C200103C02BF0034420905AFC200047C\r\nS315A00003703C02BF0034420900AFC200008FC2000495\r\nS315A0000380000000009042000000000000304200FF84\r\nS315A00003901040FFFA0000000093C300108FC20000B7\r\nS315A00003A000000000A043000003C0E8218FBE0008A3\r\nS315A00003B027BD001003E000080000000027BDFFE8ED\r\nS315A00003C0AFBF0014AFBE001003A0F021AFC4001849\r\nS315A00003D008000101000000008FC200180000000004\r\nS315A00003E08042000000000000004020210C0000D444\r\nS315A00003F0000000008FC20018000000002442000187\r\nS315A0000400AFC200188FC20018000000008042000092\r\nS315A0000410000000001440FFF00000000003C0E82127\r\nS315A00004208FBF00148FBE001027BD001803E0000880\r\nS315A00004300000000027BDFFE8AFBF0014AFBE00104C\r\nS315A000044003A0F0213C02A000244410140C0000EFED\r\nS315A0000450000000003C02A0008C4320002402000102\r\nS315A0000460AC62000003C0E8218FBF00148FBE00104D\r\nS315A000047027BD001803E000080000000027BDFFE824\r\nS315A0000480AFBF0014AFBE001003A0F0213C02A00035\r\nS315A0000490244410240C0000EF000000003C02A00041\r\nS315A00004A08C42200000000000AC40000003C0E82100\r\nS315A00004B08FBF00148FBE001027BD001803E00008F0\r\nS315A00004C00000000027BDFFE8AFBF0014AFBE0010BC\r\nS315A00004D003A0F0210C00010D0000000003C0E821DC\r\nS315A00004E08FBF00148FBE001027BD001803E00008C0\r\nS315A00004F00000000027BDFFF8AFBE000003A0F0215A\r\nS315A0000500AFC400083C02A0008C4320008FC20008A4\r\nS315A000051000000000AC62000003C0E8218FBE00000E\r\nS315A000052027BD000803E000080000000027BDFFE883\r\nS315A0000530AFBF0014AFBE001003A0F0213C02A00084\r\nS315A0000540244410340C0000EF000000000C00004D05\r\nS315A00005500000000010400005000000000C00010D86\r\nS315A0000560000000000800015D000000000C00011F53\r\nS315A00005700000000003C0E8218FBF00148FBE00104A\r\nS315A000058027BD001803E000080000000000000000DE\r\nS315A000100030313233343536373839616263646566D8\r\nS315A00010100000000074657374206661696C656421C4\r\nS315A00010200A0000007465737420706173736564218F\r\nS315A00010300A0000006B65726E656C20737461727431\r\nS315A0001040696E670A000000000000000000000000B2\r\nS315A000105020000000000000000000000000000000CA\r\nS30DA00010600000000000000000E2\r\nS315A000200080000000000000000000000000000000AA\r\nS705A00000005A\r\n"; // ./browser/browser_srec.js:0
 $(document).ready(function() { // ./browser/browser_main.js:0
 INFO("Starting MIPS 4kc js emulator."); // ./browser/browser_main.js:1
 emu = new Emulator(); // ./browser/browser_main.js:2
