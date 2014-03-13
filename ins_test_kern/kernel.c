@@ -58,6 +58,7 @@ void exit(int val){
 
 void kmain(void)
 {
+#if 0
     print("kernel starting\n");
 
     if( main() != 0 ){
@@ -66,6 +67,11 @@ void kmain(void)
     else {
         pass();
     }
+#endif
+    if( main() != 0 ){
+        fail();
+    }
+    pass();
 }
 
 
