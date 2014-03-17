@@ -2,13 +2,29 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<script src="http://code.jquery.com/jquery-latest.js"></script>
-<link href="terminal.css" rel="stylesheet"/>
-<script src="../js/common/null_serial.js"></script>
-<script src="../js/browser/browser_4kc.js"></script>
+<title>Vxworks-like kernel in MIPS 4Kc</title>
+<script type="text/javascript"  src="http://code.jquery.com/jquery-latest.js"></script>
+<script type="text/javascript" src="vt100.js"></script>
+<script type="text/javascript" src="vtconsole.js"></script>
+<script type="text/javascript" src="../js/common/null_serial.js"></script>
+<script type="text/javascript"  src="../js/browser/browser_4kc.js"></script>
 </head>
 <body>
-<h2>MIPS 4Kc Emulator Terminal</h2>
-   <br/><div class="terminal"><div class="terminal-output"></div></div>
+<h2>Vxworks-like kernel in MIPS 4Kc</h2>
+<div>
+<div id="console"></div>
+<input type="text" size="1" id="infocus" style="margin-left: -5000px; float: left"/>
+<input type="button" value="Start MIPS"/>
+<input type="button" value="Stop MIPS"/>
+<input type="button" value="Clear screen"/><br/>
+<br/>
+Full-line input for incompatible browsers:<br/>
+<input type="text" size="80" id="lineinput"
+ onkeypress="lineInput(this, event);"/>
+<input type="button" value="Send"
+ onclick="lineInputDone(document.getElementById('lineinput'));"/>
+<div id="spinner"></div>
+<div id="debugOut"></div>
+</div>
 </body>
 </html>
