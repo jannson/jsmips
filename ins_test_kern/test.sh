@@ -10,16 +10,14 @@ dbgsend() {
 runTest() {
     
     echo "Testing kernel $1"
-    #timeout 5m node ../js/node/node_4kc.js 2>&1 &
-    #node ../js/node/node_4kc.js 2>&1 &
+    #timeout 5m node ../js/node/node_4kc.js & 
     #NODE_PID=$!
-	#echo $NODE_PID
     #sleep "1"
     dbgsend "break"
     dbgsend "reset"
     #dbgsend "setll 0" 
     echo "loading srec image"
-    python ../tools/srecLoader.py $1 --setentry
+    python ../tools/srecLoader.py $1 --setentry > /dev/null
     #echo "starting $KERNEL"
     #dbgsend "run"
     #time wait $NODE_PID

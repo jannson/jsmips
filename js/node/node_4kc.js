@@ -6952,7 +6952,7 @@ function CompareRegister(cpu) { // ./common/cpu.js:199
     this.putUInt32 = function ( val ) { // ./common/cpu.js:207
         this.val = (val & 0xffffffff) >>> 0; // ./common/cpu.js:208
         // clear timer interrupt // ./common/cpu.js:209
-        this.cpu.C0Registers[13].IP1 = this.cpu.C0Registers[13].IP1 & "0x1f"; // ./common/cpu.js:210
+        this.cpu.C0Registers[13].IP1 = this.cpu.C0Registers[13].IP1 & 0x1f; // ./common/cpu.js:210
     } // ./common/cpu.js:211
 } // ./common/cpu.js:212
  // ./common/cpu.js:213
@@ -7284,18 +7284,18 @@ function MipsCpu () { // ./common/cpu.js:452
        //TODO: if in debug mode check CountDM // ./common/cpu.js:539
        this.clockCount = this.clockCount + 1; // ./common/cpu.js:540
  // ./common/cpu.js:541
+       var statusRegister = c0Registers[12]; // ./common/cpu.js:553
        if(this.clockCount == 2) // ./common/cpu.js:542
        { // ./common/cpu.js:543
             countRegister.putUInt32(countRegister.asUInt32()+1); // ./common/cpu.js:544
  // ./common/cpu.js:545
             if(countRegister.asUInt32() == compareRegister.asUInt32()) // ./common/cpu.js:546
             { // ./common/cpu.js:547
-                this.triggerInterrupt(7); // ./common/cpu.js:548
+				this.triggerInterrupt(7); // ./common/cpu.js:548
             } // ./common/cpu.js:549
             this.clockCount = 0; // ./common/cpu.js:550
        } // ./common/cpu.js:551
  // ./common/cpu.js:552
-       var statusRegister = c0Registers[12]; // ./common/cpu.js:553
  // ./common/cpu.js:554
        if((statusRegister.IE == 1) && (statusRegister.EXL == 0) && (statusRegister.ERL == 0)) // ./common/cpu.js:555
        { // ./common/cpu.js:556
@@ -9192,6 +9192,10 @@ function MipsCpu () { // ./common/cpu.js:452
         // ignore in emulator // ./common/cpu.js:2447
         this.advancePC(); // ./common/cpu.js:2448
     } // ./common/cpu.js:2449
+	this.TEQ = function ( op ) {
+		//Do nothing ignore the teq inst
+	    this.advancePC();
+	}
 } // ./common/cpu.js:2450
  // ./common/uart.js:0
 function UART_16550() // ./common/uart.js:1
@@ -10047,6 +10051,30 @@ addCommand("readtlb", function (s,command) { // ./node/node_main.js:153
  // ./node/node_main.js:193
  // ./node/node_main.js:194
  // ./node/node_main.js:195
+addCommand("c0", function (s, command) {
+	arrs = new Array(32);
+	for(var i = 0; i < 32; i++){
+		arrs[i] = 'GR' + i + '\t\t';
+	}
+	arrs[0] = 'INDEX\t\t';
+	arrs[9] = 'COUNT\t\t';
+	arrs[11] = 'COMPARE\t\t';
+	arrs[12] = 'STATUS\t\t';
+	arrs[13] = 'CAUSE\t\t';
+	arrs[14] = 'EXCEPTION\t';
+	arrs[15] = 'GP\t\t';
+	arrs[16] = 'CONFIG0\t\t';
+	arrs[17] = 'CONFIG1\t\t';
+
+    for(var i = 0 ; i < 18 ; i++){
+		if( (i == 7) || (i == 16) || (i >= 20 && i <= 22) || (i == 25) || (i==29) || (i==27)) {
+			continue;
+		}
+		val = emu.cpu.C0Registers[i].asUInt32();
+		s.write(arrs[i] + '0x' + val.toString(16) +'\n');
+    }
+    s.write('\n');
+});
 addCommand("readreg", function (s,command) { // ./node/node_main.js:196
     arg = command.split(" ")[1]; // ./node/node_main.js:197
     var val = 0; // ./node/node_main.js:198
