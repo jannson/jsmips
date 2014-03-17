@@ -7284,18 +7284,18 @@ function MipsCpu () { // ./common/cpu.js:452
        //TODO: if in debug mode check CountDM // ./common/cpu.js:539
        this.clockCount = this.clockCount + 1; // ./common/cpu.js:540
  // ./common/cpu.js:541
-       var statusRegister = c0Registers[12]; // ./common/cpu.js:553
        if(this.clockCount == 2) // ./common/cpu.js:542
        { // ./common/cpu.js:543
             countRegister.putUInt32(countRegister.asUInt32()+1); // ./common/cpu.js:544
  // ./common/cpu.js:545
             if(countRegister.asUInt32() == compareRegister.asUInt32()) // ./common/cpu.js:546
             { // ./common/cpu.js:547
-				this.triggerInterrupt(7); // ./common/cpu.js:548
+                this.triggerInterrupt(7); // ./common/cpu.js:548
             } // ./common/cpu.js:549
             this.clockCount = 0; // ./common/cpu.js:550
        } // ./common/cpu.js:551
  // ./common/cpu.js:552
+       var statusRegister = c0Registers[12]; // ./common/cpu.js:553
  // ./common/cpu.js:554
        if((statusRegister.IE == 1) && (statusRegister.EXL == 0) && (statusRegister.ERL == 0)) // ./common/cpu.js:555
        { // ./common/cpu.js:556
@@ -9192,11 +9192,12 @@ function MipsCpu () { // ./common/cpu.js:452
         // ignore in emulator // ./common/cpu.js:2447
         this.advancePC(); // ./common/cpu.js:2448
     } // ./common/cpu.js:2449
-	this.TEQ = function ( op ) {
-		//Do nothing ignore the teq inst
-	    this.advancePC();
-	}
-} // ./common/cpu.js:2450
+ // ./common/cpu.js:2450
+	this.TEQ = function ( op ) { // ./common/cpu.js:2451
+        // ignore it // ./common/cpu.js:2452
+        this.advancePC(); // ./common/cpu.js:2453
+	} // ./common/cpu.js:2454
+} // ./common/cpu.js:2455
  // ./common/uart.js:0
 function UART_16550() // ./common/uart.js:1
 { // ./common/uart.js:2
@@ -9789,7 +9790,7 @@ function Mmu(size) { // ./common/mmu.js:12
  // ./common/null_serial.js:2
 function null_serial () { // ./common/null_serial.js:3
     this.writeToConsole = function (s) { // ./common/null_serial.js:4
- // ./common/null_serial.js:5
+	  terminal(s); // ./common/null_serial.js:5
     } // ./common/null_serial.js:6
  // ./common/null_serial.js:7
     this.writeToDevice = function (s) { // ./common/null_serial.js:8
@@ -10049,229 +10050,228 @@ addCommand("readtlb", function (s,command) { // ./node/node_main.js:153
 	} // ./node/node_main.js:191
 }); // ./node/node_main.js:192
  // ./node/node_main.js:193
- // ./node/node_main.js:194
- // ./node/node_main.js:195
-addCommand("c0", function (s, command) {
-	arrs = new Array(32);
-	for(var i = 0; i < 32; i++){
-		arrs[i] = 'GR' + i + '\t\t';
-	}
-	arrs[0] = 'INDEX\t\t';
-	arrs[9] = 'COUNT\t\t';
-	arrs[11] = 'COMPARE\t\t';
-	arrs[12] = 'STATUS\t\t';
-	arrs[13] = 'CAUSE\t\t';
-	arrs[14] = 'EXCEPTION\t';
-	arrs[15] = 'GP\t\t';
-	arrs[16] = 'CONFIG0\t\t';
-	arrs[17] = 'CONFIG1\t\t';
-
-    for(var i = 0 ; i < 18 ; i++){
-		if( (i == 7) || (i == 16) || (i >= 20 && i <= 22) || (i == 25) || (i==29) || (i==27)) {
-			continue;
-		}
-		val = emu.cpu.C0Registers[i].asUInt32();
-		s.write(arrs[i] + '0x' + val.toString(16) +'\n');
-    }
-    s.write('\n');
-});
-addCommand("readreg", function (s,command) { // ./node/node_main.js:196
-    arg = command.split(" ")[1]; // ./node/node_main.js:197
-    var val = 0; // ./node/node_main.js:198
- // ./node/node_main.js:199
-    for(var i = 0 ; i < 32 ; i++){ // ./node/node_main.js:200
-        if(arg == "GR"+i.toString(10)){ // ./node/node_main.js:201
-            val = emu.cpu.genRegisters[i].asUInt32(); // ./node/node_main.js:202
-            s.write("ok "+ val.toString(16) +'\n'); // ./node/node_main.js:203
-            return; // ./node/node_main.js:204
-        } // ./node/node_main.js:205
- // ./node/node_main.js:206
-    } // ./node/node_main.js:207
+addCommand("c0", function (s, command) { // ./node/node_main.js:194
+	arrs = new Array(32); // ./node/node_main.js:195
+	for(var i = 0; i < 32; i++){ // ./node/node_main.js:196
+		arrs[i] = 'GR' + i + '\t\t'; // ./node/node_main.js:197
+	} // ./node/node_main.js:198
+	arrs[0] = 'INDEX\t\t'; // ./node/node_main.js:199
+	arrs[9] = 'COUNT\t\t'; // ./node/node_main.js:200
+	arrs[11] = 'COMPARE\t\t'; // ./node/node_main.js:201
+	arrs[12] = 'STATUS\t\t'; // ./node/node_main.js:202
+	arrs[13] = 'CAUSE\t\t'; // ./node/node_main.js:203
+	arrs[14] = 'EXCEPTION\t'; // ./node/node_main.js:204
+	arrs[15] = 'GP\t\t'; // ./node/node_main.js:205
+	arrs[16] = 'CONFIG0\t\t'; // ./node/node_main.js:206
+	arrs[17] = 'CONFIG1\t\t'; // ./node/node_main.js:207
  // ./node/node_main.js:208
-    if(arg == "PC"){ // ./node/node_main.js:209
-        val = emu.cpu.PC.asUInt32(); // ./node/node_main.js:210
-    } else if (arg == "HI") { // ./node/node_main.js:211
-        val = emu.cpu.HI.asUInt32(); // ./node/node_main.js:212
-    } else if (arg == "LO") { // ./node/node_main.js:213
-        val = emu.cpu.LO.asUInt32(); // ./node/node_main.js:214
-    } else { // ./node/node_main.js:215
-        s.write("ERROR: badreg\n"); // ./node/node_main.js:216
-        return; // ./node/node_main.js:217
-    } // ./node/node_main.js:218
- // ./node/node_main.js:219
-    s.write("ok "+ val.toString(16) +'\n'); // ./node/node_main.js:220
-}); // ./node/node_main.js:221
+    for(var i = 0 ; i < 18 ; i++){ // ./node/node_main.js:209
+		if( (i == 7) || (i == 16) || (i >= 20 && i <= 22) || (i == 25) || (i==29) || (i==27)) { // ./node/node_main.js:210
+			continue; // ./node/node_main.js:211
+		} // ./node/node_main.js:212
+		val = emu.cpu.C0Registers[i].asUInt32(); // ./node/node_main.js:213
+		s.write(arrs[i] + '0x' + val.toString(16) +'\n'); // ./node/node_main.js:214
+    } // ./node/node_main.js:215
+    s.write('\n'); // ./node/node_main.js:216
+}); // ./node/node_main.js:217
+ // ./node/node_main.js:218
+addCommand("readreg", function (s,command) { // ./node/node_main.js:219
+    arg = command.split(" ")[1]; // ./node/node_main.js:220
+    var val = 0; // ./node/node_main.js:221
  // ./node/node_main.js:222
- // ./node/node_main.js:223
-addCommand("writereg", function (s,command) { // ./node/node_main.js:224
-    var arg = command.split(" ")[1]; // ./node/node_main.js:225
-    var val = parseInt(command.split(" ")[2],16); // ./node/node_main.js:226
- // ./node/node_main.js:227
-    for(var i = 0 ; i < 32 ; i++){ // ./node/node_main.js:228
-        if(arg == "GR"+i.toString(10)){ // ./node/node_main.js:229
-            val = emu.cpu.genRegisters[i].putUInt32(val); // ./node/node_main.js:230
-            s.write("ok\n"); // ./node/node_main.js:231
-            return; // ./node/node_main.js:232
-        } // ./node/node_main.js:233
- // ./node/node_main.js:234
-    } // ./node/node_main.js:235
-    if(arg == "PC"){ // ./node/node_main.js:236
-        emu.cpu.PC.putUInt32(val); // ./node/node_main.js:237
-    } else if (arg == "HI") { // ./node/node_main.js:238
-        emu.cpu.HI.putUInt32(val); // ./node/node_main.js:239
-    } else if (arg == "LO") { // ./node/node_main.js:240
-        emu.cpu.LO.putUInt32(val); // ./node/node_main.js:241
-    } else { // ./node/node_main.js:242
-        s.write("ERROR: badreg\n"); // ./node/node_main.js:243
-        return; // ./node/node_main.js:244
-    } // ./node/node_main.js:245
-    s.write("ok\n"); // ./node/node_main.js:246
-}); // ./node/node_main.js:247
- // ./node/node_main.js:248
- // ./node/node_main.js:249
-addCommand("physmemsize", function (s,command) { // ./node/node_main.js:250
-    s.write("ok " + emu.mmu.physicalMemory.getSize().toString(16) + '\n'); // ./node/node_main.js:251
-}) // ./node/node_main.js:252
- // ./node/node_main.js:253
- // ./node/node_main.js:254
-addCommand("readpb", function (s,command) { // ./node/node_main.js:255
-    var addr = command.split(" ")[1]; // ./node/node_main.js:256
-    addr = parseInt(addr,16); // ./node/node_main.js:257
-    var val = emu.mmu.physicalMemory.getByte(addr) // ./node/node_main.js:258
-    s.write("ok "+ val.toString(16) +'\n'); // ./node/node_main.js:259
-}) // ./node/node_main.js:260
- // ./node/node_main.js:261
- // ./node/node_main.js:262
-addCommand("readb", function (s,command) { // ./node/node_main.js:263
-    var addr = command.split(" ")[1]; // ./node/node_main.js:264
-    addr = parseInt(addr,16); // ./node/node_main.js:265
-    var val = callNoException(emu.mmu,emu.mmu.readByte,[addr]); // ./node/node_main.js:266
-    s.write("ok "+ val.toString(16) +'\n'); // ./node/node_main.js:267
-}); // ./node/node_main.js:268
- // ./node/node_main.js:269
- // ./node/node_main.js:270
-addCommand("readword", function (s,command) { // ./node/node_main.js:271
-    var addr = command.split(" ")[1]; // ./node/node_main.js:272
-    addr = parseInt(addr,16); // ./node/node_main.js:273
-    var val = callNoException(emu.mmu,emu.mmu.readWord,[addr]); // ./node/node_main.js:274
-    s.write("ok "+ val.toString(16) +'\n'); // ./node/node_main.js:275
-}); // ./node/node_main.js:276
+    for(var i = 0 ; i < 32 ; i++){ // ./node/node_main.js:223
+        if(arg == "GR"+i.toString(10)){ // ./node/node_main.js:224
+            val = emu.cpu.genRegisters[i].asUInt32(); // ./node/node_main.js:225
+            s.write("ok "+ val.toString(16) +'\n'); // ./node/node_main.js:226
+            return; // ./node/node_main.js:227
+        } // ./node/node_main.js:228
+ // ./node/node_main.js:229
+    } // ./node/node_main.js:230
+ // ./node/node_main.js:231
+    if(arg == "PC"){ // ./node/node_main.js:232
+        val = emu.cpu.PC.asUInt32(); // ./node/node_main.js:233
+    } else if (arg == "HI") { // ./node/node_main.js:234
+        val = emu.cpu.HI.asUInt32(); // ./node/node_main.js:235
+    } else if (arg == "LO") { // ./node/node_main.js:236
+        val = emu.cpu.LO.asUInt32(); // ./node/node_main.js:237
+    } else { // ./node/node_main.js:238
+        s.write("ERROR: badreg\n"); // ./node/node_main.js:239
+        return; // ./node/node_main.js:240
+    } // ./node/node_main.js:241
+ // ./node/node_main.js:242
+    s.write("ok "+ val.toString(16) +'\n'); // ./node/node_main.js:243
+}); // ./node/node_main.js:244
+ // ./node/node_main.js:245
+ // ./node/node_main.js:246
+addCommand("writereg", function (s,command) { // ./node/node_main.js:247
+    var arg = command.split(" ")[1]; // ./node/node_main.js:248
+    var val = parseInt(command.split(" ")[2],16); // ./node/node_main.js:249
+ // ./node/node_main.js:250
+    for(var i = 0 ; i < 32 ; i++){ // ./node/node_main.js:251
+        if(arg == "GR"+i.toString(10)){ // ./node/node_main.js:252
+            val = emu.cpu.genRegisters[i].putUInt32(val); // ./node/node_main.js:253
+            s.write("ok\n"); // ./node/node_main.js:254
+            return; // ./node/node_main.js:255
+        } // ./node/node_main.js:256
+ // ./node/node_main.js:257
+    } // ./node/node_main.js:258
+    if(arg == "PC"){ // ./node/node_main.js:259
+        emu.cpu.PC.putUInt32(val); // ./node/node_main.js:260
+    } else if (arg == "HI") { // ./node/node_main.js:261
+        emu.cpu.HI.putUInt32(val); // ./node/node_main.js:262
+    } else if (arg == "LO") { // ./node/node_main.js:263
+        emu.cpu.LO.putUInt32(val); // ./node/node_main.js:264
+    } else { // ./node/node_main.js:265
+        s.write("ERROR: badreg\n"); // ./node/node_main.js:266
+        return; // ./node/node_main.js:267
+    } // ./node/node_main.js:268
+    s.write("ok\n"); // ./node/node_main.js:269
+}); // ./node/node_main.js:270
+ // ./node/node_main.js:271
+ // ./node/node_main.js:272
+addCommand("physmemsize", function (s,command) { // ./node/node_main.js:273
+    s.write("ok " + emu.mmu.physicalMemory.getSize().toString(16) + '\n'); // ./node/node_main.js:274
+}) // ./node/node_main.js:275
+ // ./node/node_main.js:276
  // ./node/node_main.js:277
- // ./node/node_main.js:278
-addCommand("writeb", function (s,command) { // ./node/node_main.js:279
-    var addr = command.split(" ")[1]; // ./node/node_main.js:280
-    var val = command.split(" ")[2]; // ./node/node_main.js:281
-    addr = parseInt(addr,16); // ./node/node_main.js:282
-    val = parseInt(val,16); // ./node/node_main.js:283
-    callNoException(emu.mmu,emu.mmu.writeByte,[addr,val]); // ./node/node_main.js:284
-    s.write("ok\n"); // ./node/node_main.js:285
-}); // ./node/node_main.js:286
- // ./node/node_main.js:287
- // ./node/node_main.js:288
-addCommand("shutdown", function(s,command){ // ./node/node_main.js:289
-    INFO("closing emulator server"); // ./node/node_main.js:290
-    s.write("ok\n") // ./node/node_main.js:291
-    process.exit(0); // ./node/node_main.js:292
-}); // ./node/node_main.js:293
- // ./node/node_main.js:294
-addCommand("loadsrec", function (s,command) { // ./node/node_main.js:295
-    var setEntry = command.split(" ")[1]; // ./node/node_main.js:296
-    var srecString = command.split(" ")[2]; // ./node/node_main.js:297
-    setEntry = parseInt(setEntry,16); // ./node/node_main.js:298
-    try { // ./node/node_main.js:299
-        callNoException(emu.mmu,emu.mmu.loadSREC,[srecString,setEntry]); // ./node/node_main.js:300
-    } catch(e){ // ./node/node_main.js:301
-        s.write(e); // ./node/node_main.js:302
-    } // ./node/node_main.js:303
-    s.write("ok\n"); // ./node/node_main.js:304
-}); // ./node/node_main.js:305
- // ./node/node_main.js:306
-addCommand("filesrecload", function (s,command) { // ./node/node_main.js:307
-    var setEntry = command.split(" ")[1]; // ./node/node_main.js:308
-    var srecFilePath = command.split(" ")[2]; // ./node/node_main.js:309
+addCommand("readpb", function (s,command) { // ./node/node_main.js:278
+    var addr = command.split(" ")[1]; // ./node/node_main.js:279
+    addr = parseInt(addr,16); // ./node/node_main.js:280
+    var val = emu.mmu.physicalMemory.getByte(addr) // ./node/node_main.js:281
+    s.write("ok "+ val.toString(16) +'\n'); // ./node/node_main.js:282
+}) // ./node/node_main.js:283
+ // ./node/node_main.js:284
+ // ./node/node_main.js:285
+addCommand("readb", function (s,command) { // ./node/node_main.js:286
+    var addr = command.split(" ")[1]; // ./node/node_main.js:287
+    addr = parseInt(addr,16); // ./node/node_main.js:288
+    var val = callNoException(emu.mmu,emu.mmu.readByte,[addr]); // ./node/node_main.js:289
+    s.write("ok "+ val.toString(16) +'\n'); // ./node/node_main.js:290
+}); // ./node/node_main.js:291
+ // ./node/node_main.js:292
+ // ./node/node_main.js:293
+addCommand("readword", function (s,command) { // ./node/node_main.js:294
+    var addr = command.split(" ")[1]; // ./node/node_main.js:295
+    addr = parseInt(addr,16); // ./node/node_main.js:296
+    var val = callNoException(emu.mmu,emu.mmu.readWord,[addr]); // ./node/node_main.js:297
+    s.write("ok "+ val.toString(16) +'\n'); // ./node/node_main.js:298
+}); // ./node/node_main.js:299
+ // ./node/node_main.js:300
+ // ./node/node_main.js:301
+addCommand("writeb", function (s,command) { // ./node/node_main.js:302
+    var addr = command.split(" ")[1]; // ./node/node_main.js:303
+    var val = command.split(" ")[2]; // ./node/node_main.js:304
+    addr = parseInt(addr,16); // ./node/node_main.js:305
+    val = parseInt(val,16); // ./node/node_main.js:306
+    callNoException(emu.mmu,emu.mmu.writeByte,[addr,val]); // ./node/node_main.js:307
+    s.write("ok\n"); // ./node/node_main.js:308
+}); // ./node/node_main.js:309
  // ./node/node_main.js:310
-    setEntry = parseInt(setEntry,16); // ./node/node_main.js:311
-    fs.readFile(srecFilePath, 'ascii', function(err,data) { // ./node/node_main.js:312
-        if(err) { // ./node/node_main.js:313
-            s.write(err); // ./node/node_main.js:314
-        } // ./node/node_main.js:315
-        else // ./node/node_main.js:316
-        { // ./node/node_main.js:317
-            try { // ./node/node_main.js:318
-                callNoException(emu.mmu, emu.mmu.loadSREC, [data,setEntry]); // ./node/node_main.js:319
-                s.write("ok"); // ./node/node_main.js:320
-            } catch(e) { // ./node/node_main.js:321
-                s.write(e); // ./node/node_main.js:322
-            } // ./node/node_main.js:323
-        } // ./node/node_main.js:324
-    }); // ./node/node_main.js:325
-}); // ./node/node_main.js:326
- // ./node/node_main.js:327
-// END debugging interface // ./node/node_main.js:328
+ // ./node/node_main.js:311
+addCommand("shutdown", function(s,command){ // ./node/node_main.js:312
+    INFO("closing emulator server"); // ./node/node_main.js:313
+    s.write("ok\n") // ./node/node_main.js:314
+    process.exit(0); // ./node/node_main.js:315
+}); // ./node/node_main.js:316
+ // ./node/node_main.js:317
+addCommand("loadsrec", function (s,command) { // ./node/node_main.js:318
+    var setEntry = command.split(" ")[1]; // ./node/node_main.js:319
+    var srecString = command.split(" ")[2]; // ./node/node_main.js:320
+    setEntry = parseInt(setEntry,16); // ./node/node_main.js:321
+    try { // ./node/node_main.js:322
+        callNoException(emu.mmu,emu.mmu.loadSREC,[srecString,setEntry]); // ./node/node_main.js:323
+    } catch(e){ // ./node/node_main.js:324
+        s.write(e); // ./node/node_main.js:325
+    } // ./node/node_main.js:326
+    s.write("ok\n"); // ./node/node_main.js:327
+}); // ./node/node_main.js:328
  // ./node/node_main.js:329
- // ./node/node_main.js:330
- // ./node/node_main.js:331
-function handleCommand(data) { // ./node/node_main.js:332
+addCommand("filesrecload", function (s,command) { // ./node/node_main.js:330
+    var setEntry = command.split(" ")[1]; // ./node/node_main.js:331
+    var srecFilePath = command.split(" ")[2]; // ./node/node_main.js:332
  // ./node/node_main.js:333
-    data = new String(data).split("\n")[0]; // ./node/node_main.js:334
-    for(var i = 0 ; i < commands.length ; i++){ // ./node/node_main.js:335
-        if(data.substr(0,commands[i].length) == commands[i]) { // ./node/node_main.js:336
-            try { // ./node/node_main.js:337
-                commandLUT[commands[i]](this,data); // ./node/node_main.js:338
-            } catch (e){ // ./node/node_main.js:339
-                if (e == 1337){ // ./node/node_main.js:340
-                    this.write("ERROR: processor exception occured ") // ./node/node_main.js:341
-                } else { // ./node/node_main.js:342
-                    throw e; // ./node/node_main.js:343
-                } // ./node/node_main.js:344
-            } // ./node/node_main.js:345
-            return; // ./node/node_main.js:346
+    setEntry = parseInt(setEntry,16); // ./node/node_main.js:334
+    fs.readFile(srecFilePath, 'ascii', function(err,data) { // ./node/node_main.js:335
+        if(err) { // ./node/node_main.js:336
+            s.write(err); // ./node/node_main.js:337
+        } // ./node/node_main.js:338
+        else // ./node/node_main.js:339
+        { // ./node/node_main.js:340
+            try { // ./node/node_main.js:341
+                callNoException(emu.mmu, emu.mmu.loadSREC, [data,setEntry]); // ./node/node_main.js:342
+                s.write("ok"); // ./node/node_main.js:343
+            } catch(e) { // ./node/node_main.js:344
+                s.write(e); // ./node/node_main.js:345
+            } // ./node/node_main.js:346
         } // ./node/node_main.js:347
-    } // ./node/node_main.js:348
- // ./node/node_main.js:349
-    this.write("ERROR unknown command - " + data + "\n"); // ./node/node_main.js:350
-} // ./node/node_main.js:351
+    }); // ./node/node_main.js:348
+}); // ./node/node_main.js:349
+ // ./node/node_main.js:350
+// END debugging interface // ./node/node_main.js:351
  // ./node/node_main.js:352
  // ./node/node_main.js:353
-var dbgserver = net.createServer(function(c) { //'connection' listener // ./node/node_main.js:354
- // ./node/node_main.js:355
-  INFO('debugger connected'); // ./node/node_main.js:356
- // ./node/node_main.js:357
-  c.on('end', function() { // ./node/node_main.js:358
-    INFO('debugger disconnected'); // ./node/node_main.js:359
-  }); // ./node/node_main.js:360
- // ./node/node_main.js:361
-  c.on("data", handleCommand); // ./node/node_main.js:362
- // ./node/node_main.js:363
-}); // ./node/node_main.js:364
- // ./node/node_main.js:365
-dbgserver.listen(8123, function() { //'listening' listener // ./node/node_main.js:366
-    INFO('server bound'); // ./node/node_main.js:367
-}); // ./node/node_main.js:368
- // ./node/node_main.js:369
- // ./node/node_main.js:370
- // ./node/node_main.js:371
-var serialServer = net.createServer(function(c) { //'connection' listener // ./node/node_main.js:372
- // ./node/node_main.js:373
-  INFO('serialServer connected'); // ./node/node_main.js:374
-  registerSerialSocket(this); // ./node/node_main.js:375
+ // ./node/node_main.js:354
+function handleCommand(data) { // ./node/node_main.js:355
+ // ./node/node_main.js:356
+    data = new String(data).split("\n")[0]; // ./node/node_main.js:357
+    for(var i = 0 ; i < commands.length ; i++){ // ./node/node_main.js:358
+        if(data.substr(0,commands[i].length) == commands[i]) { // ./node/node_main.js:359
+            try { // ./node/node_main.js:360
+                commandLUT[commands[i]](this,data); // ./node/node_main.js:361
+            } catch (e){ // ./node/node_main.js:362
+                if (e == 1337){ // ./node/node_main.js:363
+                    this.write("ERROR: processor exception occured ") // ./node/node_main.js:364
+                } else { // ./node/node_main.js:365
+                    throw e; // ./node/node_main.js:366
+                } // ./node/node_main.js:367
+            } // ./node/node_main.js:368
+            return; // ./node/node_main.js:369
+        } // ./node/node_main.js:370
+    } // ./node/node_main.js:371
+ // ./node/node_main.js:372
+    this.write("ERROR unknown command - " + data + "\n"); // ./node/node_main.js:373
+} // ./node/node_main.js:374
+ // ./node/node_main.js:375
  // ./node/node_main.js:376
-  c.on('end', function() { // ./node/node_main.js:377
-    INFO('serialServer disconnected'); // ./node/node_main.js:378
-    removeSerialSocket(this); // ./node/node_main.js:379
-  }); // ./node/node_main.js:380
- // ./node/node_main.js:381
-  c.on("data", function(d){ // ./node/node_main.js:382
-	  data = new String(d).split("\n")[0]; // ./node/node_main.js:383
-	  INFO(data); // ./node/node_main.js:384
-  } ); // ./node/node_main.js:387 // ./node/node_main.js:385
+var dbgserver = net.createServer(function(c) { //'connection' listener // ./node/node_main.js:377
+ // ./node/node_main.js:378
+  INFO('debugger connected'); // ./node/node_main.js:379
+ // ./node/node_main.js:380
+  c.on('end', function() { // ./node/node_main.js:381
+    INFO('debugger disconnected'); // ./node/node_main.js:382
+  }); // ./node/node_main.js:383
+ // ./node/node_main.js:384
+  c.on("data", handleCommand); // ./node/node_main.js:385
  // ./node/node_main.js:386
-  this.write = function(data) { // ./node/node_main.js:387
-	  terminal(data); // ./node/node_main.js:388
-  }; // ./node/node_main.js:389
- // ./node/node_main.js:390
+}); // ./node/node_main.js:387
+ // ./node/node_main.js:388
+dbgserver.listen(8123, function() { //'listening' listener // ./node/node_main.js:389
+    INFO('server bound'); // ./node/node_main.js:390
 }); // ./node/node_main.js:391
  // ./node/node_main.js:392
-serialServer.listen(8124, function() { //'listening' listener // ./node/node_main.js:393
-    INFO('server bound'); // ./node/node_main.js:394
-}); // ./node/node_main.js:395
+ // ./node/node_main.js:393
+ // ./node/node_main.js:394
+var serialServer = net.createServer(function(c) { //'connection' listener // ./node/node_main.js:395
+ // ./node/node_main.js:396
+  INFO('serialServer connected'); // ./node/node_main.js:397
+  registerSerialSocket(this); // ./node/node_main.js:398
+ // ./node/node_main.js:399
+  c.on('end', function() { // ./node/node_main.js:400
+    INFO('serialServer disconnected'); // ./node/node_main.js:401
+    removeSerialSocket(this); // ./node/node_main.js:402
+  }); // ./node/node_main.js:403
+ // ./node/node_main.js:404
+  c.on("data", function(d){ // ./node/node_main.js:405
+	  data = new String(d).split("\n")[0]; // ./node/node_main.js:406
+	  INFO(data); // ./node/node_main.js:407
+  } ); // ./node/node_main.js:387 // ./node/node_main.js:408
+ // ./node/node_main.js:409
+  this.write = function(data) { // ./node/node_main.js:410
+	  terminal(data); // ./node/node_main.js:411
+  }; // ./node/node_main.js:412
+ // ./node/node_main.js:413
+}); // ./node/node_main.js:414
+ // ./node/node_main.js:415
+serialServer.listen(8124, function() { //'listening' listener // ./node/node_main.js:416
+    INFO('server bound'); // ./node/node_main.js:417
+}); // ./node/node_main.js:418

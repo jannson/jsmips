@@ -208,7 +208,7 @@ function CompareRegister(cpu) {
     this.putUInt32 = function ( val ) {
         this.val = (val & 0xffffffff) >>> 0;
         // clear timer interrupt
-        this.cpu.C0Registers[13].IP1 = this.cpu.C0Registers[13].IP1 & "0x1f";
+        this.cpu.C0Registers[13].IP1 = this.cpu.C0Registers[13].IP1 & 0x1f;
     }
 }
 
@@ -2448,4 +2448,9 @@ function MipsCpu () {
         // ignore in emulator
         this.advancePC();
     }
+
+	this.TEQ = function ( op ) {
+        // ignore it
+        this.advancePC();
+	}
 }

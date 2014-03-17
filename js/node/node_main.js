@@ -192,7 +192,30 @@ addCommand("readtlb", function (s,command) {
 	}	
 });
 
+addCommand("c0", function (s, command) {
+	arrs = new Array(32);
+	for(var i = 0; i < 32; i++){
+		arrs[i] = 'GR' + i + '\t\t';
+	}
+	arrs[0] = 'INDEX\t\t';
+	arrs[9] = 'COUNT\t\t';
+	arrs[11] = 'COMPARE\t\t';
+	arrs[12] = 'STATUS\t\t';
+	arrs[13] = 'CAUSE\t\t';
+	arrs[14] = 'EXCEPTION\t';
+	arrs[15] = 'GP\t\t';
+	arrs[16] = 'CONFIG0\t\t';
+	arrs[17] = 'CONFIG1\t\t';
 
+    for(var i = 0 ; i < 18 ; i++){
+		if( (i == 7) || (i == 16) || (i >= 20 && i <= 22) || (i == 25) || (i==29) || (i==27)) {
+			continue;
+		}
+		val = emu.cpu.C0Registers[i].asUInt32();
+		s.write(arrs[i] + '0x' + val.toString(16) +'\n');
+    }
+    s.write('\n');
+});
 
 addCommand("readreg", function (s,command) {
     arg = command.split(" ")[1];
